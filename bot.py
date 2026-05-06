@@ -12,12 +12,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger("SWIMA_Hybrid_System")
 
-# بيانات حسابك الشخصي + توكن البوت
-api_id = 37031871
-api_hash = '54734f272c265392a8ed2924e183cc15'
+# بيانات حسابك الشخصي + توكن البوت (البيانات الجديدة)
+api_id = 36474294
+api_hash = '469e18e1369193bcc7f3c670a44abee3'
 BOT_TOKEN = '8762389075:AAGAKqwPl3C73DUrQN2V7tz2MbUclIQBFFE'
 
-# تشغيل العميلين
+# تشغيل العميلين (حسابك الشخصي والبوت)
 user_client = TelegramClient('ai_library_session_2', api_id, api_hash)
 bot_client = TelegramClient('bot_audio_session', api_id, api_hash)
 
@@ -25,7 +25,7 @@ pending_audios = {}
 admin_id = None
 bot_info = None
 
-# دالة تحليل الصوت
+# دالة تحليل الصوت واستخراج اللقطات الحماسية
 def process_audio(file_path, duration_mins):
     try:
         audio = AudioSegment.from_file(file_path)
@@ -108,7 +108,7 @@ async def dur_handler(event):
 
     file_path = None
     try:
-        # 1. التكتيك الجديد: حسابك يبحث بنفسه عن آخر ملف في المحادثة وينزله!
+        # حسابك يبحث بنفسه عن آخر ملف في المحادثة وينزله!
         recent_msgs = await user_client.get_messages(bot_info.username, limit=10)
         user_msg = None
         for m in recent_msgs:
@@ -120,7 +120,7 @@ async def dur_handler(event):
             await status_msg.edit("❌ لم أتمكن من العثور على الملف لتنزيله.")
             return
 
-        # 2. حسابك الشخصي يقوم بتنزيل الملف 
+        # حسابك الشخصي يقوم بتنزيل الملف
         save_path = f"temp_audio_{random.randint(1000, 99999)}.mp3"
         file_path = await user_client.download_media(user_msg, file=save_path)
         
@@ -130,7 +130,7 @@ async def dur_handler(event):
 
         await status_msg.edit(f"✅ تم التنزيل بنجاح. جاري المونتاج واستخراج أفضل اللقطات...")
 
-        # 3. معالجة الصوت 
+        # معالجة الصوت
         loop = asyncio.get_event_loop()
         clips = await loop.run_in_executor(None, process_audio, file_path, duration)
 
@@ -139,7 +139,7 @@ async def dur_handler(event):
         else:
             await status_msg.edit(f"🔥 تم اقتناص {len(clips)} مقاطع! جاري الإرسال...")
             
-            # 4. إرسال المقاطع الجاهزة
+            # إرسال المقاطع الجاهزة
             for i, clip in enumerate(clips):
                 await bot_client.send_file(
                     chat_id,
